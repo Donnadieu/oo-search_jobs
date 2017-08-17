@@ -1,0 +1,2 @@
+class SearchJobs::Jobs
+end
