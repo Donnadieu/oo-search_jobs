@@ -32,8 +32,8 @@ class SearchJobs::Scraper
       result.css('div.row.result').each do |job|
         job_title = job.css('a').attr('title').text
         location = job.css('span.location').text
+        url  =
         binding.pry
-        summary =
         # Save results
         results << {job_title: job_title, location: location}
       end
