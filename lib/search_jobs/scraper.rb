@@ -3,7 +3,7 @@ require 'pry'
 
 class SearchJobs::Scraper
 
-  def self.scrape_indeed(search_term = "Manager", zip_code = 14605)
+  def self.indeed(search_term = "Manager", zip_code = 14605)
     # Set up an array to store all of the results
     results = []
     # Instantiate a new web scraper with Mechanize
@@ -31,12 +31,40 @@ class SearchJobs::Scraper
     results_page.css('td#resultsCol').each do |result|
       result.css('div.row.result').each do |job|
         job_title = job.css('a').attr('title').text
+        location = job.css('span.location').text
+        binding.pry
+        summary =
         # Save results
-        results << {job_title: job_title}
+        results << {job_title: job_title, location: location}
       end
     end
-    binding.pry
+  end
+
+
+  def self.monster(search_term = "Manager", zip_code = 14605)
+    # Set up an array to store all of the results
+    results = []
+    # Instantiate a new web scraper with Mechanize
+    scraper = Mechanize.new
+    # Mechanize setup to rate limit of scraping
+    # to once every half-second.
+    scraper.history_added = Proc.new { sleep 0.5 }
+    # hard-coding the address
+    url = "https://www.monster.com/"
+
+    page = scraper.get(url)
+    search_form = page.forms.first
+
+    # Use Mechanize to enter search terms into the form fields
+    search_form.fields.each do |f|
+      if f.name == "q"
+        f.value = search_term
+      elsif f.name == "where"
+        f.value = zip_code
+      end
+    end
   end
 end
+
 # job = results_page.search('h2.jobtitle a')
 # results << {job_title: job_title, location: location, profile_url: profile_url, summary: summary}
