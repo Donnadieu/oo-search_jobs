@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-
-require_relative '../lib/search_jobs'
+require_relative '../config/environment'
 
 SearchJobs::CLI.new.search
