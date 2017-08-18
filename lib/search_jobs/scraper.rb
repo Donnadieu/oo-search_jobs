@@ -10,6 +10,7 @@ class SearchJobs::Scraper
     url = "https://www.indeed.com/"
     page = scraper.get(url)
     search_form = page.forms.first
+
     search_form.fields.each do |f|
       if f.name == "q"
         f.value = search_term
@@ -18,6 +19,12 @@ class SearchJobs::Scraper
       end
     end
     results_page = search_form.submit
-    binding.pry
+    results_page.css('td#resultsCol').each do |result|
+      result.css('div.row.result').each do |job|
+        binding.pry
+        job_title = job.css('a').attr('title').text
+      end
+    end
   end
 end
+# job = results_page.search('h2.jobtitle a')
