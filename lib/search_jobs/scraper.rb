@@ -3,14 +3,14 @@ require 'pry'
 
 class SearchJobs::Scraper
 
-  def self.indeed(search_term = "Pos System", zip_code = 14605)
+  def self.indeed(search_term = "developer remote", zip_code = 14605)
     # Set up an array to store all of the results
     results = []
     # Instantiate a new web scraper with Mechanize
     scraper = Mechanize.new
     # Mechanize setup to rate limit of scraping
     # to once every half-second.
-    scraper.history_added = Proc.new { sleep 0.5 }
+    scraper.history_added = Proc.new { sleep 0.50 }
     # hard-coding the address
     url = "https://www.indeed.com/"
 
@@ -27,10 +27,9 @@ class SearchJobs::Scraper
     end
     # Get results
     results_page = search_form.submit
-    next_page = results_page.at('div.pagination a')
+    next_page = results_page.search('div.pagination a').last
     # Parse results
-    while results_page.at('div.pagination a') != nil
-      next_page = results_page.at('div.pagination a')
+    while next_page.text.include?("Next")
       results_page.css('td#resultsCol').each do |result|
         result.css('div.row.result').each do |job|
           job_title = job.css('a').attr('title').text
@@ -42,8 +41,9 @@ class SearchJobs::Scraper
       end
       scraper.click(next_page)
       results_page = scraper.click(next_page)
-      binding.pry
+      next_page = results_page.search('div.pagination a').last
     end
+    results.size
   end
 
 
