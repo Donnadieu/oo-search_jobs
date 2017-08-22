@@ -3,7 +3,7 @@ require 'pry'
 
 class SearchJobs::Scraper
 
-  def self.indeed(search_term = "Manager", zip_code = 14605)
+  def self.indeed(search_term = "Pos System", zip_code = 14605)
     # Set up an array to store all of the results
     results = []
     # Instantiate a new web scraper with Mechanize
@@ -15,7 +15,7 @@ class SearchJobs::Scraper
     url = "https://www.indeed.com/"
 
     page = scraper.get(url)
-    search_form = page.forms.first
+    search_form = page.form
 
     # Use Mechanize to enter search terms into the form fields
     search_form.fields.each do |f|
@@ -27,16 +27,22 @@ class SearchJobs::Scraper
     end
     # Get results
     results_page = search_form.submit
+    next_page = results_page.at('div.pagination a')
     # Parse results
-    results_page.css('td#resultsCol').each do |result|
-      result.css('div.row.result').each do |job|
-        job_title = job.css('a').attr('title').text
-        location = job.css('span.location').text
-        url  =
-        binding.pry
-        # Save results
-        results << {job_title: job_title, location: location}
+    while results_page.at('div.pagination a') != nil
+      next_page = results_page.at('div.pagination a')
+      results_page.css('td#resultsCol').each do |result|
+        result.css('div.row.result').each do |job|
+          job_title = job.css('a').attr('title').text
+          location = job.css('span.location').text
+          job_url  =
+          # Save results
+          results << {job_title: job_title, location: location, job_url: job_url}
+        end
       end
+      scraper.click(next_page)
+      results_page = scraper.click(next_page)
+      binding.pry
     end
   end
 
@@ -65,6 +71,3 @@ class SearchJobs::Scraper
     end
   end
 end
-
-# job = results_page.search('h2.jobtitle a')
-# results << {job_title: job_title, location: location, profile_url: profile_url, summary: summary}
