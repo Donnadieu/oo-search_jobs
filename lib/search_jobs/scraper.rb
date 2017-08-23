@@ -4,15 +4,14 @@ require 'pry'
 class SearchJobs::Scraper
   # Set up an array to store all of the results
   @@results = []
-  def self.indeed(search_term = 'nuclear', zip_code = '14605')
+  def self.indeed(search_term = 'manager', zip_code = '14605')
     # Instantiate a new web scraper with Mechanize
     scraper = Mechanize.new
     # Mechanize setup to rate limit of scraping
     # to once every second.
-    scraper.history_added = Proc.new { sleep 1.0 }
+    # scraper.history_added = Proc.new { sleep 1.0 }
     # hard-coding the address
     url = "https://www.indeed.com/"
-
     page = scraper.get(url)
     search_form = page.form
     # Use Mechanize to enter search terms into the form fields
@@ -27,9 +26,7 @@ class SearchJobs::Scraper
     # Get results
     results_page = search_form.submit
     next_page = results_page.search('div.pagination a').last
-    no_results =
-
-    binding.pry
+    no_results = next_page == nil
 
     # Parse results
     if next_page == nil && no_results == false
