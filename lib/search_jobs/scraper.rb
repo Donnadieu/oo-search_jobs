@@ -6,9 +6,12 @@ class SearchJobs::Scraper
   # Set up an array to store all of the results
   @@jobs = []
 
-  def self.indeed(search_term = nil, zip_code = nil)
+  def self.indeed(search_term = 'nil', zip_code = 'nil')
     # Instantiate a new web scraper with Mechanize
     scraper = Mechanize.new
+    # Mechanize setup to rate limit of scraping
+    # to once every half-second.
+    # scraper.history_added = Proc.new { sleep 5.0 }
     # hard-coding the address
     url = "https://www.indeed.com/"
     page = scraper.get(url)
@@ -30,27 +33,25 @@ class SearchJobs::Scraper
 
     # Parse results
     if next_page == nil && no_results == false
-      results_page.css('td#resultsCol').each do |result|
-        result.css('div.row.result').each do |job|
-          job_title = job.css('a').attr('title').text
-          job_location = job.css('span.location').text
-          job_url = job.css('a').attr('href').text
-          # Save results
-          @@jobs << {name: job_title, location: job_location, url: job_url}
-        end
+      puts "Searching... Please be patient go make a coffee :)"
+      results_page.css('div.row.result').each do |job|
+        job_title = job.css('a').attr('title').text
+        job_location = job.css('span.location').text
+        job_url = job.css('a').attr('href').text
+        # Save results
+        @@jobs << {name: job_title, location: job_location, url: job_url}
       end
     elsif no_results
       puts "No results for this query in your area"
     else
-      while next_page.text.include?("Next")
-        results_page.css('td#resultsCol').each do |result|
-          result.css('div.row.result').each do |job|
-            job_title = job.css('a').attr('title').text
-            job_location = job.css('span.location').text
-            job_url = job.css('a').attr('href').text
-            # Save results
-            @@jobs << {title: job_title, location: job_location, url: job_url}
-          end
+      while next_page.text.include?("Next") && @@jobs.size <= 75
+        puts "Searching... Please be patient go make a coffee :)"
+        results_page.css('div.row.result').each do |job|
+          job_title = job.css('a').attr('title').text
+          job_location = job.css('span.location').text
+          job_url = job.css('a').attr('href').text
+          # Save results
+          @@jobs << {title: job_title, location: job_location, url: job_url}
         end
         scraper.click(next_page)
         results_page = scraper.click(next_page)
