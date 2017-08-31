@@ -30,16 +30,17 @@ class SearchJobs::Scraper
     results_page = search_form.submit
     next_page = results_page.css('div.pagination a').last
     no_results = next_page == nil
-
     # Parse results
     if next_page == nil && no_results == false
       puts "Searching... Please be patient go make a coffee :)"
       results_page.css('div.row.result').each do |job|
         job_title = job.css('a').attr('title').text
         job_location = job.css('span.location').text
-        job_url = job.css('a').attr('href').text
+        job_url = "https://www.indeed.com#{job.css('a').attr('href').text}"
+        job_company = job.css('span.company').text
+        job_summary = job.css('span.summary').text
         # Save results
-        @@jobs << {name: job_title, location: job_location, url: job_url}
+        @@jobs << {name: job_title, location: job_location, url: job_url, company: job_company, summary: job_summary}
       end
     elsif no_results
       puts "No results for this query in your area"
@@ -49,9 +50,11 @@ class SearchJobs::Scraper
         results_page.css('div.row.result').each do |job|
           job_title = job.css('a').attr('title').text
           job_location = job.css('span.location').text
-          job_url = job.css('a').attr('href').text
+          job_url = ("https://www.indeed.com#{job.css('a').attr('href').text}")
+          job_company = job.css('span.company').text
+          job_summary = job.css('span.summary').text
           # Save results
-          @@jobs << {name: job_title, location: job_location, url: job_url}
+          @@jobs << {name: job_title, location: job_location, url: job_url, company: job_company, summary: job_summary}
         end
         scraper.click(next_page)
         results_page = scraper.click(next_page)

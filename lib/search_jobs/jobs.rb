@@ -1,11 +1,13 @@
 class SearchJobs::Jobs
 
-  attr_accessor :name, :location, :url
+  attr_accessor :name, :location, :url, :company, :summary
 
   @@all = []
 
   def initialize(job_hash)
-    job_hash.each { |attribute, value| self.send("#{attribute}=", "#{value}") }
+    job_hash.each do |attribute, value|
+      self.send("#{attribute}=", value)
+    end
     @@all << self
   end
 
@@ -13,6 +15,7 @@ class SearchJobs::Jobs
     jobs_array.each do |job_hash|
       SearchJobs::Jobs.new(job_hash)
     end
+    puts "Almost there..."
   end
 
   def self.all
