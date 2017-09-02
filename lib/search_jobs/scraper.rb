@@ -1,17 +1,16 @@
 require 'mechanize'
 require 'pry'
-require 'httparty'
 
 class SearchJobs::Scraper
   # Set up an array to store all of the results
   @@jobs = []
 
-  def self.indeed(search_term = 'scientist biology', zip_code = '14605')
+  def self.indeed(search_term = nil, zip_code = nil)
     # Instantiate a new web scraper with Mechanize
     scraper = Mechanize.new
     # Mechanize setup to rate limit of scraping
     # to once every half-second.
-    # scraper.history_added = Proc.new { sleep 0.5 }
+    scraper.history_added = Proc.new { sleep 0.5 }
     # hard-coding the address
     url = "https://www.indeed.com/"
     page = scraper.get(url)
@@ -45,12 +44,12 @@ class SearchJobs::Scraper
     elsif no_results
       puts "No results for this query in your area"
     else
-      while next_page.text.include?("Next") && @@jobs.size <= 1000
+      while next_page.text.include?("Next") && @@jobs.size <= 100
         puts "Searching... Please be patient go make a coffee :)"
         results_page.css('div.row.result').each do |job|
           job_title = job.css('a').attr('title').text
           job_location = job.css('span.location').text
-          job_url = ("https://www.indeed.com#{job.css('a').attr('href').text}")
+          job_url =  ("https://www.indeed.com#{job.css('a').attr('href').text}")
           job_company = job.css('span.company').text
           job_summary = job.css('span.summary').text
           # Save results
