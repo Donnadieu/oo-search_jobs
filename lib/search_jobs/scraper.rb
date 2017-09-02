@@ -11,7 +11,7 @@ class SearchJobs::Scraper
     scraper = Mechanize.new
     # Mechanize setup to rate limit of scraping
     # to once every half-second.
-    scraper.history_added = Proc.new { sleep 0.5 }
+    # scraper.history_added = Proc.new { sleep 0.5 }
     # hard-coding the address
     url = "https://www.indeed.com/"
     page = scraper.get(url)
