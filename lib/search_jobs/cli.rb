@@ -1,11 +1,8 @@
 class SearchJobs::CLI
 
-  @@jobs_array = nil
-
   def run
     puts "Welcome to Job Search!"
     search
-    good_bye
   end
 
   def search
@@ -13,7 +10,8 @@ class SearchJobs::CLI
     while input != 'exit'
       puts "Please type 'search' to look for a job, 'show' to see the last search, 'clear' to clear last search or type 'exit': "
       input = gets.strip.downcase
-      if input == 'search'
+      case input
+      when 'search'
         puts "Please enter the job you are looking for: "
         search_term = gets.strip
         puts "Please enter the zip code: "
@@ -24,12 +22,17 @@ class SearchJobs::CLI
           print "Please enter the zip code: "
           retry
         end
-        @@jobs_array = SearchJobs::Scraper.indeed(search_term, zip_code)
-        make_jobs(@@jobs_array)
-      elsif input == 'show'
-        display_jobs
-      elsif input == 'clear'
+        make_jobs(SearchJobs::Scraper.indeed(search_term, zip_code))
+      when'show'
+        if SearchJobs::Jobs.all.empty?
+          puts "No jobs to show"
+        else
+          display_jobs
+        end
+      when 'clear'
         clear_last_search
+      when 'exit'
+        good_bye
       else
         puts "That is not a valid entry pleae try again"
       end
@@ -37,7 +40,6 @@ class SearchJobs::CLI
   end
 
   def make_jobs(jobs_array)
-    jobs_array = SearchJobs::Scraper.indeed
     SearchJobs::Jobs.create_from_collection(jobs_array)
   end
 
@@ -47,9 +49,9 @@ class SearchJobs::CLI
       puts "#{job.name.upcase}".colorize(:blue)
       puts "  Location:".colorize(:light_blue) + " #{job.location}"
       puts "  Url:".colorize(:light_blue) + " #{job.url}"
-      puts "  Summary:".colorize(:light_blue) + "#{job.summary.strip}"
+      puts "  Summary:".colorize(:light_blue) + "#{job.summary}"
       puts "----------------------".colorize(:red)
-      puts "If you want to apply just click on the link or 'copy-paste' it into your browser :)"
+      puts "If you want to apply just 'copy-paste' the link it into your browser :)"
     end
   end
 

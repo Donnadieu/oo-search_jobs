@@ -15,7 +15,6 @@ class SearchJobs::Jobs
     jobs_array.each do |job_hash|
       SearchJobs::Jobs.new(job_hash)
     end
-    puts "Almost there..."
   end
 
   def self.all
