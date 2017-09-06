@@ -21,9 +21,11 @@ class SearchJobs::CLI
           print "Please enter the zip code: "
           retry
         end
-        make_jobs(SearchJobs::Scraper.indeed(search_term, zip_code))
+        SearchJobs::Scraper.indeed(search_term, zip_code)
+        SearchJobs::Scraper.number_jobs
+        make_jobs(SearchJobs::Scraper.jobs)
       when'show'
-        if SearchJobs::Jobs.all.empty?
+        if SearchJobs::Scraper.jobs.empty?
           puts "No jobs to show"
         else
           display_jobs
@@ -44,7 +46,7 @@ class SearchJobs::CLI
 
   def display_jobs
     SearchJobs::Jobs.all.each do |job|
-      puts "==========#{job.company.upcase.strip}=========".colorize(:yellow)
+      puts "#{job.number} ==========#{job.company.upcase.strip}=========".colorize(:yellow)
       puts "#{job.name.upcase}".colorize(:blue)
       puts "  Location:".colorize(:light_blue) + " #{job.location}"
       puts "  Url:".colorize(:light_blue) + " #{job.url}"
