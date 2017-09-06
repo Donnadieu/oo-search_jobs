@@ -46,7 +46,7 @@ class SearchJobs::CLI
 
   def display_jobs
     SearchJobs::Jobs.all.each do |job|
-      puts "#{job.number} ==========#{job.company.upcase.strip}=========".colorize(:yellow)
+      puts "#{job.number}.".colorize(:red) + "==========#{job.company.upcase.strip}=========".colorize(:yellow)
       puts "#{job.name.upcase}".colorize(:blue)
       puts "  Location:".colorize(:light_blue) + " #{job.location}"
       puts "  Url:".colorize(:light_blue) + " #{job.url}"
