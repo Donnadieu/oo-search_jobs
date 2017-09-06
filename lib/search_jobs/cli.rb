@@ -30,7 +30,7 @@ class SearchJobs::CLI
         # Intsantiate jobs based on hashes keys and values
         make_jobs(SearchJobs::Scraper.jobs)
       when'show'
-        if SearchJobs::Scraper.jobs.empty?
+        if SearchJobs::Scraper.jobs.empty? || SearchJobs::Jobs.all.empty?
           puts "No jobs to show"
         else
           display_jobs
@@ -64,6 +64,7 @@ class SearchJobs::CLI
 
   def clear_last_search
     SearchJobs::Jobs.all.clear
+    SearchJobs::Scraper.jobs.clear
   end
 
   def good_bye
