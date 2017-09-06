@@ -24,7 +24,6 @@ class SearchJobs::CLI
         SearchJobs::Scraper.indeed(search_term, zip_code)
         SearchJobs::Scraper.number_jobs
         make_jobs(SearchJobs::Scraper.jobs)
-        binding.pry
       when'show'
         if SearchJobs::Scraper.jobs.empty?
           puts "No jobs to show"
@@ -46,14 +45,37 @@ class SearchJobs::CLI
   end
 
   def display_jobs
-    SearchJobs::Jobs.all.each do |job|
-      puts "#{job.number}.".colorize(:red) + "==========#{job.company.upcase.strip}=========".colorize(:yellow)
-      puts "#{job.name.upcase}".colorize(:blue)
-      puts "  Location:".colorize(:light_blue) + " #{job.location}"
-      puts "  Url:".colorize(:light_blue) + " #{job.url}"
-      puts "  Summary:".colorize(:light_blue) + "#{job.summary}"
-      puts "----------------------".colorize(:red)
-      puts "If you want to apply just 'copy-paste' the link into your browser :)"
+    jobs = SearchJobs::Jobs.all
+    if jobs.size < 15
+      jobs.each do |job|
+        puts "#{job.number}.".colorize(:red) + "==========#{job.company.upcase.strip}=========".colorize(:yellow)
+        puts "#{job.name.upcase}".colorize(:blue)
+        puts "  Location:".colorize(:light_blue) + " #{job.location}"
+        puts "  Url:".colorize(:light_blue) + " #{job.url}"
+        puts "  Summary:".colorize(:light_blue) + "#{job.summary}"
+        puts "----------------------".colorize(:red)
+        puts "If you want to apply just 'copy-paste' the link into your browser :)"
+      end
+    elsif jobs.size > 15
+      puts "#{jobs.size} jobs were found in your area. Please enter up to what number would like to see?"
+      begin
+        number = gets
+        number = Integer(number)
+      rescue
+        print "That is not a number please try again: "
+        retry
+      end
+      jobs.find_all do |job|
+        if job.number <= number
+          puts "#{job.number}.".colorize(:red) + "==========#{job.company.upcase.strip}=========".colorize(:yellow)
+          puts "#{job.name.upcase}".colorize(:blue)
+          puts "  Location:".colorize(:light_blue) + " #{job.location}"
+          puts "  Url:".colorize(:light_blue) + " #{job.url}"
+          puts "  Summary:".colorize(:light_blue) + "#{job.summary}"
+          puts "----------------------".colorize(:red)
+          puts "If you want to apply just 'copy-paste' the link into your browser :)"
+        end
+      end
     end
   end
 
