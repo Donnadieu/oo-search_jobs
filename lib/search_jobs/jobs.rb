@@ -1,6 +1,6 @@
 class SearchJobs::Jobs
 
-  attr_accessor :name, :location, :url, :company, :summary
+  attr_accessor :name, :location, :url, :company, :summary, :number
 
   @@all = []
 
