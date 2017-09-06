@@ -2,7 +2,7 @@ class SearchJobs::Scraper
   # Set up an array to store all of the results
   @@jobs = []
 
-  def self.indeed(search_term = nil, zip_code = nil)
+  def self.indeed(search_term = "nuclear", zip_code = 14605)
     # Instantiate a new web scraper with Mechanize
     scraper = Mechanize.new
     # Mechanize setup to rate limit of scraping
@@ -55,6 +55,17 @@ class SearchJobs::Scraper
         next_page = results_page.css('div.pagination a').last
       end
     end
+  end
+
+  def self.number_jobs
+    number = 0
+    @@jobs.each do |job_hash|
+      number += 1
+      job_hash[:number] = number
+    end
+  end
+
+  def self.jobs
     @@jobs
   end
 end
