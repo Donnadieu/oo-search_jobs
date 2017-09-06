@@ -24,6 +24,7 @@ class SearchJobs::CLI
         SearchJobs::Scraper.indeed(search_term, zip_code)
         SearchJobs::Scraper.number_jobs
         make_jobs(SearchJobs::Scraper.jobs)
+        binding.pry
       when'show'
         if SearchJobs::Scraper.jobs.empty?
           puts "No jobs to show"
@@ -52,7 +53,7 @@ class SearchJobs::CLI
       puts "  Url:".colorize(:light_blue) + " #{job.url}"
       puts "  Summary:".colorize(:light_blue) + "#{job.summary}"
       puts "----------------------".colorize(:red)
-      puts "If you want to apply just 'copy-paste' the link it into your browser :)"
+      puts "If you want to apply just 'copy-paste' the link into your browser :)"
     end
   end
 

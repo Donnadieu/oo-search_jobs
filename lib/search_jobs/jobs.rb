@@ -17,6 +17,10 @@ class SearchJobs::Jobs
     end
   end
 
+  def self.search_by_number(number)
+    SearchJobs::Jobs.all.detect {|job| job.number == number}
+  end
+
   def self.all
     @@all
   end
