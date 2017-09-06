@@ -29,6 +29,7 @@ class SearchJobs::CLI
         SearchJobs::Scraper.number_jobs
         # Intsantiate jobs based on hashes keys and values
         make_jobs(SearchJobs::Scraper.jobs)
+
       when'show'
         if SearchJobs::Scraper.jobs.empty? || SearchJobs::Jobs.all.empty?
           puts "No jobs to show"
@@ -48,9 +49,11 @@ class SearchJobs::CLI
   def make_jobs(jobs_array)
     SearchJobs::Jobs.create_from_collection(jobs_array)
   end
+
   # Display resutls from the search
   def display_jobs
     jobs = SearchJobs::Jobs.all
+
     jobs.each do |job|
       puts "#{job.number}.".colorize(:red) + "==========#{job.company.upcase.strip}=========".colorize(:yellow)
       puts "#{job.name.upcase}".colorize(:blue)
