@@ -46,7 +46,7 @@ class SearchJobs::CLI
     end
   end
 
-  def make_jobs(jobs_array)
+  def make_jobs
     SearchJobs::Jobs.create_from_collection(jobs_array)
   end
 
