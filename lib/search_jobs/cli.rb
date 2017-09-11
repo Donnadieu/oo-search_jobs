@@ -31,7 +31,7 @@ class SearchJobs::CLI
         make_jobs(SearchJobs::Scraper.jobs)
 
       when'show'
-        if SearchJobs::Scraper.jobs.empty? || SearchJobs::Jobs.all.empty?
+        if SearchJobs::Scraper.jobs_data.empty? || SearchJobs::Jobs.all.empty?
           puts "No jobs to show"
         else
           display_jobs
@@ -67,7 +67,7 @@ class SearchJobs::CLI
 
   def clear_last_search
     SearchJobs::Jobs.all.clear
-    SearchJobs::Scraper.jobs.clear
+    SearchJobs::Scraper.jobs_data.clear
   end
 
   def good_bye
