@@ -2,7 +2,7 @@ class SearchJobs::Scraper
   # Set up an array to store all of the results
   @@jobs_data = []
 
-  def self.indeed(search_term = "nuclear", zip_code = 14605)
+  def self.indeed(search_term = nil, zip_code = nil)
     # Instantiate a new web scraper with Mechanize
     scraper = Mechanize.new
     # Mechanize setup to rate limit of scraping
