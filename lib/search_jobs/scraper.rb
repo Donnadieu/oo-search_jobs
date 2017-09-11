@@ -41,7 +41,7 @@ class SearchJobs::Scraper
         @@jobs_data << {name: job_title, location: job_location, url: job_url, company: job_company, summary: job_summary}
       end
     elsif no_results == false && next_page != nil
-      while next_page.text.include?("Next") && @@jobs.size <= 100
+      while next_page.text.include?("Next") && @@jobs_data.size <= 100
         puts "Searching... Please be patient go make a coffee :)"
         results_page.css('div.row.result').each do |job|
 
@@ -69,7 +69,7 @@ class SearchJobs::Scraper
     end
   end
 
-  def self.jobs
+  def self.jobs_data
     @@jobs_data
   end
 end

@@ -8,5 +8,11 @@ require_relative '../config/environment'
 # require "pry"
 # Pry.start
 
+def reload!
+  load './lib/search_jobs/cli.rb'
+  load './lib/search_jobs/jobs.rb'
+  load './lib/search_jobs/scraper.rb'
+end
+
 require "irb"
 IRB.start(__FILE__)
