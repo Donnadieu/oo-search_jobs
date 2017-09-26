@@ -28,7 +28,7 @@ class SearchJobs::CLI
         # Numbered the jobs array
         SearchJobs::Scraper.number_jobs
         # Intsantiate jobs based on hashes keys and values
-        make_jobs(SearchJobs::Scraper.jobs)
+        make_jobs(SearchJobs::Scraper.jobs_data)
 
       when'show'
         if SearchJobs::Scraper.jobs_data.empty? || SearchJobs::Jobs.all.empty?
