@@ -1,6 +1,6 @@
 class SearchJobs::Scraper
   # Set up an array to store all of the results
-  @@jobs_data = []
+  # @@jobs_data = []
 
   def self.indeed(search_term = nil, zip_code = nil)
     # Instantiate a new web scraper with Mechanize
@@ -38,10 +38,10 @@ class SearchJobs::Scraper
         job_summary = job.css('span.summary').text.strip
 
         # Save results
-        @@jobs_data << {name: job_title, location: job_location, url: job_url, company: job_company, summary: job_summary}
+        SearchJobs::Jobs.new ({name: job_title, location: job_location, url: job_url, company: job_company, summary: job_summary})
       end
     elsif no_results == false && next_page != nil
-      while next_page.text.include?("Next") && @@jobs_data.size <= 100
+      while next_page.text.include?("Next") && SearchJobs::Jobs.all.size <= 100
         puts "Searching... Please be patient go make a coffee :)"
         results_page.css('div.row.result').each do |job|
 
@@ -52,24 +52,12 @@ class SearchJobs::Scraper
           job_summary = job.css('span.summary').text.strip
 
           # Save results
-          @@jobs_data << {name: job_title, location: job_location, url: job_url, company: job_company, summary: job_summary}
+           SearchJobs::Jobs.new ({name: job_title, location: job_location, url: job_url, company: job_company, summary: job_summary})
         end
         scraper.click(next_page)
         results_page = scraper.click(next_page)
         next_page = results_page.css('div.pagination a').last
       end
     end
-  end
-
-  def self.number_jobs
-    number = 0
-    @@jobs_data.each do |job_hash|
-      number += 1
-      job_hash[:number] = number
-    end
-  end
-
-  def self.jobs_data
-    @@jobs_data
   end
 end

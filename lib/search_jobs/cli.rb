@@ -26,15 +26,16 @@ class SearchJobs::CLI
         # Scrape the infromation from the page
         SearchJobs::Scraper.indeed(search_term, zip_code)
         # Numbered the jobs array
-        SearchJobs::Scraper.number_jobs
+        # SearchJobs::Scraper.number_jobs
         # Intsantiate jobs based on hashes keys and values
-        make_jobs(SearchJobs::Scraper.jobs_data)
+        # make_jobs(SearchJobs::Scraper.jobs_data)
 
       when'show'
-        if SearchJobs::Scraper.jobs_data.empty? || SearchJobs::Jobs.all.empty?
+        if SearchJobs::Jobs.all.empty?
           puts "No jobs to show"
         else
           display_jobs
+          select_menu
         end
       when 'clear'
         clear_last_search
@@ -46,22 +47,26 @@ class SearchJobs::CLI
     end
   end
 
-  def make_jobs(jobs_array)
-    SearchJobs::Jobs.create_from_collection(jobs_array)
+  def select_menu
+    puts "Select the number of the job you would like to know more details of: "
+    input = gets.strip.to_i
+    job = SearchJobs::Jobs.all[input-1]
+    puts "==========#{job.company.upcase.strip}=========".colorize(:yellow)
+    puts "#{job.name.upcase}".colorize(:blue)
+    puts "  Location:".colorize(:light_blue) + " #{job.location}"
+    puts "  Url:".colorize(:light_blue) + " #{job.url}"
+    puts "  Summary:".colorize(:light_blue) + "#{job.summary}"
+    puts "----------------------".colorize(:red)
+    puts "If you want to apply just 'copy-paste' the link into your browser :)"
   end
 
   # Display resutls from the search
   def display_jobs
     jobs = SearchJobs::Jobs.all
 
-    jobs.each do |job|
-      puts "#{job.number}.".colorize(:red) + "==========#{job.company.upcase.strip}=========".colorize(:yellow)
+    jobs.each.with_index(1) do |job, index|
+      puts "#{index}.".colorize(:red) + "==========#{job.company.upcase.strip}=========".colorize(:yellow)
       puts "#{job.name.upcase}".colorize(:blue)
-      puts "  Location:".colorize(:light_blue) + " #{job.location}"
-      puts "  Url:".colorize(:light_blue) + " #{job.url}"
-      puts "  Summary:".colorize(:light_blue) + "#{job.summary}"
-      puts "----------------------".colorize(:red)
-      puts "If you want to apply just 'copy-paste' the link into your browser :)"
     end
   end
 

@@ -1,6 +1,6 @@
 class SearchJobs::Jobs
 
-  attr_accessor :name, :location, :url, :company, :summary, :number
+  attr_accessor :name, :location, :url, :company, :summary
 
   @@all = []
 
@@ -9,12 +9,6 @@ class SearchJobs::Jobs
       self.send("#{attribute}=", value)
     end
     @@all << self
-  end
-
-  def self.create_from_collection(jobs_array)
-    jobs_array.each do |job_hash|
-      SearchJobs::Jobs.new(job_hash)
-    end
   end
 
   def self.all
